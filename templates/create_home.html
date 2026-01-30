@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Create your home – Home Manager{% endblock %}
+{% block body_class %}page-auth{% endblock %}
+{% block content %}
+<div class="row justify-content-center auth-page">
+  <div class="col-11 col-sm-10 col-md-6 form-container">
+    <div class="auth-card">
+      <h2 class="mb-4">Create your home</h2>
+      <p class="helper mb-4">One home, many members. You’ll be the owner and can invite others later.</p>
+      <form method="POST" action="{{ url_for('auth.create_home') }}">
+        <div class="mb-4">
+          <label for="home_name" class="form-label">Home name</label>
+          <input type="text" class="form-control" id="home_name" name="home_name" placeholder="e.g. Smith Family" value="My Home">
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Create home</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

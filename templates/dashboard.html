@@ -1,0 +1,76 @@
+{% extends "base_app.html" %}
+{% block title %}Dashboard – Home Manager{% endblock %}
+{% block app_content %}
+<header class="page-header">
+  <h1 class="page-title">Dashboard</h1>
+</header>
+
+<div class="row g-4 mb-4 dashboard-stagger">
+  <div class="col-md-4">
+    <div class="card border-0 kpi-card">
+      <div class="card-body">
+        <h5 class="card-title">Total expenses</h5>
+        <p class="card-text"><span class="count-up" data-count="{{ total_expense }}" data-format="currency">₹0.00</span></p>
+        <a href="{{ url_for('expenses.list_expenses') }}" class="btn btn-outline-primary btn-sm">View all</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-0 kpi-card">
+      <div class="card-body">
+        <h5 class="card-title">Pending tasks</h5>
+        <p class="card-text"><span class="count-up" data-count="{{ pending_tasks }}" data-format="integer">0</span></p>
+        <a href="{{ url_for('tasks.list_tasks') }}" class="btn btn-outline-primary btn-sm">View all</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-0 kpi-card">
+      <div class="card-body">
+        <h5 class="card-title">Notes</h5>
+        <p class="card-text"><span class="count-up" data-count="{{ notes_count }}" data-format="integer">0</span></p>
+        <a href="{{ url_for('notes.list_notes') }}" class="btn btn-outline-primary btn-sm">View all</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row dashboard-stagger">
+  <div class="col-lg-6 mb-4 dashboard-activity-card">
+    <div class="card border-0">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">Recent expenses</span>
+        <a href="{{ url_for('expenses.list_expenses') }}" class="btn btn-primary btn-sm">Add</a>
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for e in recent_expenses %}
+        <li class="list-group-item d-flex justify-content-between">
+          <span>{{ e.title }}</span>
+          <span class="expense-amount">₹{{ "%.2f"|format(e.amount) }}</span>
+        </li>
+        {% else %}
+        <li class="list-group-item text-muted empty-state">No expenses yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="col-lg-6 mb-4 dashboard-activity-card">
+    <div class="card border-0">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">Recent tasks</span>
+        <a href="{{ url_for('tasks.list_tasks') }}" class="btn btn-primary btn-sm">Add</a>
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for t in recent_tasks %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span class="{% if t.is_completed %}text-decoration-line-through text-muted{% endif %}">{{ t.title or t.task }}</span>
+          {% if t.is_completed %}<span class="badge bg-success">Done</span>{% else %}<span class="badge bg-secondary">Pending</span>{% endif %}
+        </li>
+        {% else %}
+        <li class="list-group-item text-muted empty-state">No tasks yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

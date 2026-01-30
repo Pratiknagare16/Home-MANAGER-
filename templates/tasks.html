@@ -1,0 +1,47 @@
+{% extends "base_app.html" %}
+{% block title %}Tasks – Home Manager{% endblock %}
+{% block app_content %}
+<header class="page-header d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+  <h1 class="page-title mb-0">Tasks</h1>
+  <span class="badge bg-secondary">{{ pending_count }} pending</span>
+</header>
+
+{% if can_edit %}
+<form method="POST" action="{{ url_for('tasks.list_tasks') }}" class="mb-4">
+  <div class="input-group">
+    <input type="text" class="form-control" name="task" placeholder="New task or chore" required>
+    <button type="submit" class="btn btn-primary">Add</button>
+  </div>
+</form>
+{% endif %}
+
+<ul class="list-group list-group-flush task-list border-0">
+  {% for t in tasks %}
+  <li class="list-group-item task-item {% if t.is_completed %}task-completed{% endif %} {% if t.priority == 'high' %}priority-high{% endif %} border rounded mb-2 task-card">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-3 flex-grow-1">
+        {% if can_edit %}
+        <form method="POST" action="{{ url_for('tasks.toggle_task', task_id=t.id) }}" class="d-inline mb-0">
+          <button type="submit" class="btn btn-link p-0 text-decoration-none" aria-label="Toggle task">
+            {% if t.is_completed %}<span class="text-success">✓</span>{% else %}<span class="text-muted">○</span>{% endif %}
+          </button>
+        </form>
+        {% endif %}
+        <span class="task-text {% if t.is_completed %}text-decoration-line-through text-muted{% endif %}">
+          {% if t.priority == 'high' %}<span class="priority-badge badge bg-danger me-2">High</span>{% endif %}
+          {{ t.title or t.task }}
+          {% if t.due_date %}<span class="task-due ms-2">{{ t.due_date.strftime('%d %b') if t.due_date else '' }}</span>{% endif %}
+        </span>
+      </div>
+      {% if can_edit %}
+      <form method="POST" action="{{ url_for('tasks.delete_task', task_id=t.id) }}" class="d-inline">
+        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+      </form>
+      {% endif %}
+    </div>
+  </li>
+  {% else %}
+  <li class="list-group-item text-muted empty-state text-center py-5 border-0">No tasks yet.{% if can_edit %} Add one above.{% endif %}</li>
+  {% endfor %}
+</ul>
+{% endblock %}

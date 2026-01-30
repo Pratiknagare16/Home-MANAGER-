@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block title %}Home Manager{% endblock %}
+{% block body_class %}app-body{% if request.endpoint %} has-bottom-nav{% endif %}{% endblock %}
+
+{% block navbar %}{% endblock %}
+
+{% block content %}
+<div class="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="appSidebar">
+        <div class="sidebar-header">
+            <a href="{{ url_for('dashboard.dashboard') }}" class="sidebar-brand text-decoration-none">
+                <i class="fa-solid fa-house-chimney text-primary fs-4 me-2"></i>
+                <span class="fw-bold fs-5 text-dark">Home Manager</span>
+            </a>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="nav flex-column gap-2">
+                <li class="nav-item">
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard.dashboard' %}active{% endif %}">
+                        <i class="fa-solid fa-chart-line nav-icon"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('expenses.list_expenses') }}" class="nav-link {% if request.endpoint and request.endpoint.startswith('expenses.') %}active{% endif %}">
+                        <i class="fa-solid fa-wallet nav-icon"></i>
+                        <span>Expenses</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('tasks.list_tasks') }}" class="nav-link {% if request.endpoint and request.endpoint.startswith('tasks.') %}active{% endif %}">
+                        <i class="fa-solid fa-check-circle nav-icon"></i>
+                        <span>Tasks</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('notes.list_notes') }}" class="nav-link {% if request.endpoint and request.endpoint.startswith('notes.') %}active{% endif %}">
+                        <i class="fa-solid fa-sticky-note nav-icon"></i>
+                        <span>Notes</span>
+                    </a>
+                </li>
+                {% if current_user.home_id %}
+                <li class="nav-item mt-3">
+                    <div class="text-muted small text-uppercase fw-bold px-3 mb-2">My Home</div>
+                    <a href="{{ url_for('homes.view') }}" class="nav-link {% if request.endpoint and request.endpoint.startswith('homes.') %}active{% endif %}">
+                        <i class="fa-solid fa-users nav-icon"></i>
+                        <span>{{ current_user.home.home_name }}</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile d-flex align-items-center gap-3 p-2 rounded-3">
+                <div class="avatar-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold rounded-circle" style="width: 40px; height: 40px;">
+                    {{ current_user.display_name[0] | upper }}
+                </div>
+                <div class="user-info overflow-hidden">
+                    <div class="user-name fw-semibold text-truncate">{{ current_user.display_name }}</div>
+                    <div class="user-role text-muted small">{{ current_user.role|capitalize }}</div>
+                </div>
+                <a href="{{ url_for('auth.logout') }}" class="logout-btn ms-auto text-muted hover-danger" title="Logout">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <header class="top-header d-flex align-items-center justify-content-between px-4 py-3 bg-white border-bottom sticky-top">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-link d-lg-none text-dark p-0" id="sidebarToggle">
+                    <i class="fa-solid fa-bars fs-5"></i>
+                </button>
+                
+                <div class="header-search position-relative d-none d-md-block">
+                    <i class="fa-solid fa-search text-muted position-absolute top-50 start-0 translate-middle-y ms-3"></i>
+                    <input type="text" class="form-control border-0 bg-light ps-5 rounded-pill" placeholder="Search..." style="width: 250px;">
+                </div>
+            </div>
+            
+            <div class="header-actions d-flex align-items-center gap-3">
+                <button class="btn btn-icon position-relative text-secondary">
+                    <i class="fa-regular fa-bell fs-5"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                        <span class="visually-hidden">New alerts</span>
+                    </span>
+                </button>
+                <div class="d-lg-none avatar-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold rounded-circle" style="width: 32px; height: 32px;">
+                     {{ current_user.display_name[0] | upper }}
+                </div>
+            </div>
+        </header>
+
+        <main class="content-body p-4">
+            {% block app_content %}{% endblock %}
+        </main>
+    </div>
+</div>
+
+<!-- Mobile Bottom Nav -->
+<nav class="mobile-bottom-nav d-lg-none fixed-bottom bg-white border-top d-flex justify-content-around align-items-center py-2 safe-area-bottom">
+    <a href="{{ url_for('dashboard.dashboard') }}" class="nav-item text-decoration-none text-center {% if request.endpoint == 'dashboard.dashboard' %}active text-primary{% else %}text-secondary{% endif %}">
+        <i class="fa-solid fa-chart-line fs-5 mb-1 d-block"></i>
+        <span class="small">Dash</span>
+    </a>
+    <a href="{{ url_for('expenses.list_expenses') }}" class="nav-item text-decoration-none text-center {% if request.endpoint and request.endpoint.startswith('expenses.') %}active text-primary{% else %}text-secondary{% endif %}">
+        <i class="fa-solid fa-wallet fs-5 mb-1 d-block"></i>
+        <span class="small">Exp</span>
+    </a>
+    <div class="nav-item-add" style="margin-top: -25px;">
+        <button class="btn btn-primary rounded-circle shadow d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;" data-bs-toggle="modal" data-bs-target="#quickAddModal">
+            <i class="fa-solid fa-plus fs-4"></i>
+        </button>
+    </div>
+    <a href="{{ url_for('tasks.list_tasks') }}" class="nav-item text-decoration-none text-center {% if request.endpoint and request.endpoint.startswith('tasks.') %}active text-primary{% else %}text-secondary{% endif %}">
+        <i class="fa-solid fa-check-circle fs-5 mb-1 d-block"></i>
+        <span class="small">Task</span>
+    </a>
+    <a href="{{ url_for('notes.list_notes') }}" class="nav-item text-decoration-none text-center {% if request.endpoint and request.endpoint.startswith('notes.') %}active text-primary{% else %}text-secondary{% endif %}">
+        <i class="fa-solid fa-sticky-note fs-5 mb-1 d-block"></i>
+        <span class="small">Note</span>
+    </a>
+</nav>
+
+<!-- Quick Add Modal -->
+<div class="modal fade" id="quickAddModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Quick Add</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="d-grid gap-3">
+                    <a href="{{ url_for('expenses.list_expenses') }}" class="btn btn-outline-primary p-3 text-start d-flex align-items-center rounded-3">
+                        <div class="bg-primary-subtle p-2 rounded-circle me-3 text-primary">
+                            <i class="fa-solid fa-wallet"></i>
+                        </div>
+                        <span class="fw-semibold">Add Expense</span>
+                    </a>
+                    <a href="{{ url_for('tasks.list_tasks') }}" class="btn btn-outline-success p-3 text-start d-flex align-items-center rounded-3">
+                        <div class="bg-success-subtle p-2 rounded-circle me-3 text-success">
+                            <i class="fa-solid fa-check-circle"></i>
+                        </div>
+                        <span class="fw-semibold">Add Task</span>
+                    </a>
+                    <a href="{{ url_for('notes.list_notes') }}" class="btn btn-outline-warning p-3 text-start d-flex align-items-center rounded-3">
+                        <div class="bg-warning-subtle p-2 rounded-circle me-3 text-warning">
+                            <i class="fa-solid fa-sticky-note"></i>
+                        </div>
+                        <span class="fw-semibold">Add Note</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const toggle = document.getElementById('sidebarToggle');
+  const sidebar = document.getElementById('appSidebar');
+  
+  if (toggle && sidebar) {
+    toggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      sidebar.classList.toggle('show');
+      
+      // Manage overlay
+      let overlay = document.querySelector('.sidebar-overlay');
+      if (sidebar.classList.contains('show')) {
+          if (!overlay) {
+              overlay = document.createElement('div');
+              overlay.className = 'sidebar-overlay';
+              document.body.appendChild(overlay);
+              overlay.addEventListener('click', () => {
+                  sidebar.classList.remove('show');
+                  overlay.remove();
+              });
+          }
+      } else if (overlay) {
+          overlay.remove();
+      }
+    });
+  }
+});
+</script>
+{% endblock %}

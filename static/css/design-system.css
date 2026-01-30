@@ -1,0 +1,527 @@
+/* ============================================================
+   HOME MANAGER – DESIGN SYSTEM
+   Modern, clean, minimal. Calm & trustworthy. SaaS dashboard.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Neutral background & surfaces */
+  --bg-page: #f6f7f9;
+  --bg-card: #ffffff;
+  --bg-sidebar: #ffffff;
+  --bg-input: #ffffff;
+
+  /* Text */
+  --text-primary: #1a1d21;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+
+  /* Soft accent – trustworthy blue */
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-light: #eef2ff;
+  --accent-muted: #818cf8;
+
+  /* Semantic */
+  --success: #059669;
+  --success-bg: #ecfdf5;
+  --warning: #d97706;
+  --warning-bg: #fffbeb;
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+  --info: #0284c7;
+  --info-bg: #f0f9ff;
+
+  /* Borders & dividers */
+  --border: #e5e7eb;
+  --border-light: #f3f4f6;
+
+  /* Spacing scale (consistent) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+
+  /* Shadows – subtle */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+}
+
+/* Global */
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Override Bootstrap primary to match accent */
+.btn-primary {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+.text-primary { color: var(--accent) !important; }
+.border-primary { border-color: var(--accent) !important; }
+.bg-primary { background-color: var(--accent) !important; }
+
+/* Cards – rounded, soft shadow */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+.card-header {
+  background: transparent;
+  border-bottom: 1px solid var(--border-light);
+  font-weight: 600;
+  padding: var(--space-4) var(--space-5);
+}
+
+/* Form controls */
+.form-control, .form-select {
+  border-radius: var(--radius-sm);
+  border-color: var(--border);
+  padding: var(--space-2) var(--space-3);
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+
+/* List groups – clean separation */
+.list-group-item {
+  border-color: var(--border-light);
+  padding: var(--space-4);
+}
+.list-group-item:first-child {
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+}
+
+/* Badges – soft */
+.badge {
+  font-weight: 500;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+/* ========== APP LAYOUT: Top nav + Left sidebar ========== */
+.app-layout {
+  display: flex;
+  min-height: calc(100vh - 56px);
+}
+.app-sidebar {
+  width: 240px;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border-light);
+  padding: var(--space-4) 0;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+.app-sidebar-nav-wrapper {
+  flex: 1;
+}
+.app-sidebar-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.app-sidebar-nav li { margin: 0; }
+.app-sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin-right: var(--space-2);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.app-sidebar-nav a:hover {
+  background: var(--border-light);
+  color: var(--text-primary);
+}
+.app-sidebar-nav a.active {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+.app-sidebar-footer {
+  margin-top: auto;
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--border-light);
+}
+.app-main {
+  flex: 1;
+  overflow-x: hidden;
+}
+.app-main .page-header {
+  margin-bottom: var(--space-6);
+}
+.app-main .page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* Top nav – minimal */
+.app-nav {
+  background: var(--bg-card) !important;
+  border-bottom: 1px solid var(--border-light);
+  padding: var(--space-2) var(--space-4);
+}
+.app-nav .navbar-brand {
+  font-weight: 700;
+  color: var(--text-primary) !important;
+}
+.app-nav .nav-link {
+  color: var(--text-secondary) !important;
+  font-weight: 500;
+}
+.app-nav .nav-link:hover {
+  color: var(--accent) !important;
+}
+
+/* ========== AUTH PAGE: Centered card + soft background ========== */
+.page-auth {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6);
+  background: linear-gradient(160deg, #f0f4ff 0%, #e8ecf4 50%, #f6f7f9 100%);
+  background-attachment: fixed;
+}
+.page-auth .auth-page {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-8);
+  border: 1px solid var(--border-light);
+}
+.auth-card h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-6);
+}
+.auth-card .form-label {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.auth-card .btn-primary {
+  padding: var(--space-2) var(--space-6);
+  font-weight: 600;
+  border-radius: var(--radius);
+}
+.auth-card .helper {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-top: var(--space-3);
+}
+
+/* ========== DASHBOARD: KPI cards ========== */
+.kpi-card .card-body {
+  padding: var(--space-5);
+}
+.kpi-card .card-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-bottom: var(--space-2);
+}
+.kpi-card .card-text {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+}
+.kpi-card .btn {
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+}
+
+/* ========== EXPENSE PAGE: Toolbar + table ========== */
+.expense-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  margin-bottom: var(--space-5);
+}
+.expense-toolbar .btn-primary {
+  font-weight: 600;
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius);
+}
+.expense-search, .expense-filter {
+  max-width: 200px;
+}
+.expense-form-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: var(--space-5);
+  margin-bottom: var(--space-6);
+  border: 1px solid var(--border-light);
+}
+.expense-form-card .form-label {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.expense-amount {
+  font-weight: 600;
+  text-align: right;
+  color: var(--text-primary);
+}
+.expense-date {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+.expense-table .expense-row {
+  padding: var(--space-4);
+}
+
+/* ========== TASKS: Cards with checkbox + priority ========== */
+.task-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  margin-bottom: var(--space-2);
+  transition: box-shadow 0.15s ease;
+}
+.task-card:hover {
+  box-shadow: var(--shadow-sm);
+}
+.task-card .form-check-input {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.1rem;
+}
+.priority-badge-high { background: var(--danger-bg); color: var(--danger); }
+.priority-badge-medium { background: var(--warning-bg); color: var(--warning); }
+.priority-badge-low { background: var(--border-light); color: var(--text-secondary); }
+.task-due {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+/* ========== NOTES: Grid of cards ========== */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+.note-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  min-height: 120px;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.note-card:hover {
+  box-shadow: var(--shadow-md);
+}
+.note-card h6 {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+.note-card .snippet {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.notes-grid .empty-state {
+  grid-column: 1 / -1;
+}
+
+/* ========== SETTINGS: Grouped sections ========== */
+.settings-section {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow);
+}
+.settings-section h5 {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-light);
+}
+.settings-section .form-label {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.settings-section .btn-primary {
+  font-weight: 600;
+  border-radius: var(--radius);
+}
+
+/* ========== DOCUMENT VAULT (placeholder) ========== */
+.doc-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  transition: box-shadow 0.15s ease;
+}
+.doc-card:hover {
+  box-shadow: var(--shadow-sm);
+}
+.doc-upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-10);
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--border-light);
+}
+.doc-upload-zone:hover {
+  border-color: var(--accent-muted);
+  background: var(--accent-light);
+}
+
+/* ========== MOBILE ========== */
+@media (max-width: 991.98px) {
+  .app-sidebar {
+    position: fixed;
+    left: 0;
+    top: 56px;
+    bottom: 0;
+    z-index: 1030;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    box-shadow: var(--shadow-lg);
+  }
+  .app-sidebar.open {
+    transform: translateX(0);
+  }
+  .app-main {
+    width: 100%;
+  }
+  .app-main .container-fluid {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+  .page-auth {
+    padding: var(--space-4);
+  }
+  .auth-card {
+    padding: var(--space-6);
+  }
+  .kpi-card .card-text {
+    font-size: 1.5rem;
+  }
+  .expense-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .expense-search, .expense-filter {
+    max-width: none;
+  }
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Bottom nav for mobile (optional) */
+.app-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-light);
+  padding: var(--space-2);
+  z-index: 1020;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+}
+@media (max-width: 991.98px) {
+  .app-bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .app-bottom-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-2) var(--space-4);
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: var(--radius);
+    min-width: 64px;
+    min-height: 56px;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .app-bottom-nav a.active {
+    color: var(--accent);
+    background: var(--accent-light);
+  }
+  body.has-bottom-nav .app-main {
+    padding-bottom: 80px;
+  }
+  /* Touch-friendly buttons and inputs */
+  .btn {
+    min-height: 44px;
+    padding: var(--space-2) var(--space-4);
+  }
+  .form-control, .form-select {
+    min-height: 44px;
+    font-size: 16px; /* avoids zoom on iOS */
+  }
+  .navbar-toggler {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  #sidebarToggle {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

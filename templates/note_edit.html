@@ -1,0 +1,22 @@
+{% extends "base_app.html" %}
+{% block title %}Edit note – Home Manager{% endblock %}
+{% block app_content %}
+<header class="page-header mb-4">
+  <h1 class="page-title">Edit note</h1>
+</header>
+
+<div class="settings-section">
+  <form method="POST" action="{{ url_for('notes.edit_note', note_id=note.id) }}">
+    <div class="mb-4">
+      <label for="title" class="form-label">Title</label>
+      <input type="text" class="form-control" id="title" name="title" value="{{ note.title }}" required>
+    </div>
+    <div class="mb-4">
+      <label for="content" class="form-label">Content</label>
+      <textarea class="form-control" id="content" name="content" rows="8">{{ note.content }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{{ url_for('notes.list_notes') }}" class="btn btn-outline-secondary ms-2">Cancel</a>
+  </form>
+</div>
+{% endblock %}

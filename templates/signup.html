@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Sign up – Home Manager{% endblock %}
+{% block body_class %}page-auth{% endblock %}
+{% block content %}
+<div class="row justify-content-center auth-page">
+  <div class="col-11 col-sm-10 col-md-5 form-container" id="signupFormContainer">
+    <div class="auth-card">
+      <h2 class="mb-4">Create account</h2>
+      <p class="helper mb-4">One home, shared expenses and tasks. Free to start.</p>
+      <form method="POST" action="{{ url_for('auth.signup') }}" id="signupForm">
+        <div class="mb-3">
+          <label for="name" class="form-label">Name</label>
+          <input type="text" class="form-control" id="name" name="name" placeholder="Your name" autofocus>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="email" name="email" required placeholder="you@example.com">
+        </div>
+        <div class="mb-4">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" name="password" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary w-100 mb-2">Create account</button>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary w-100">Already have an account?</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var container = document.getElementById('signupFormContainer');
+  if (container && document.querySelector('.alert-danger')) {
+    container.classList.add('form-shake');
+    setTimeout(function() { container.classList.remove('form-shake'); }, 400);
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base_app.html" %}
+{% block title %}Invite member – Home Manager{% endblock %}
+{% block app_content %}
+<header class="page-header mb-4">
+  <h1 class="page-title">Invite to {{ home.home_name }}</h1>
+  <p class="text-muted mb-0 mt-1">Enter email and role. Invite link will be sent when email is configured.</p>
+</header>
+
+<div class="settings-section">
+  <form method="POST" action="{{ url_for('homes.invite') }}">
+    <div class="mb-4">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" name="email" required placeholder="email@example.com">
+    </div>
+    <div class="mb-4">
+      <label for="role" class="form-label">Role</label>
+      <select class="form-select" id="role" name="role">
+        <option value="member">Member (add/view expenses & tasks)</option>
+        <option value="guest">Guest (view only)</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Send invite</button>
+    <a href="{{ url_for('homes.view') }}" class="btn btn-outline-secondary ms-2">Cancel</a>
+  </form>
+</div>
+{% endblock %}

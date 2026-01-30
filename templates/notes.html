@@ -1,0 +1,39 @@
+{% extends "base_app.html" %}
+{% block title %}Notes – Home Manager{% endblock %}
+{% block app_content %}
+<header class="page-header mb-4">
+  <h1 class="page-title">Notes</h1>
+</header>
+
+<form method="POST" action="{{ url_for('notes.list_notes') }}" class="card border-0 mb-4">
+  <div class="card-body">
+    <div class="mb-3">
+      <input type="text" class="form-control" name="title" placeholder="Note title" required>
+    </div>
+    <div class="mb-3">
+      <textarea class="form-control" name="content" rows="3" placeholder="Content (optional)"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Add note</button>
+  </div>
+</form>
+
+<div class="notes-grid notes-list">
+  {% for n in notes %}
+  <a href="{{ url_for('notes.edit_note', note_id=n.id) }}" class="text-decoration-none text-body note-card">
+    <h6>{{ n.title }}</h6>
+    {% if n.content %}
+    <p class="snippet mb-0">{{ n.content[:120] }}{% if n.content|length > 120 %}…{% endif %}</p>
+    {% else %}
+    <p class="snippet mb-0 text-muted">No content</p>
+    {% endif %}
+    <div class="note-edit-icon mt-2">
+      <span class="btn btn-sm btn-outline-primary">Edit</span>
+    </div>
+  </a>
+  {% else %}
+  <div class="empty-state text-center py-5 text-muted" style="grid-column: 1 / -1;">
+    No notes yet. Add one above.
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

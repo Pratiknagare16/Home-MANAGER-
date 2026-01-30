@@ -1,0 +1,24 @@
+{% extends "base_app.html" %}
+{% block title %}Home settings – Home Manager{% endblock %}
+{% block app_content %}
+<header class="page-header mb-4">
+  <h1 class="page-title">{{ home.home_name }}</h1>
+  <p class="text-muted mb-0 mt-1">Owner: {{ home.owner.display_name if home.owner else '—' }}</p>
+</header>
+
+<div class="settings-section">
+  <h5 class="mb-4">Members</h5>
+  <ul class="list-group list-group-flush border-0">
+    {% for u in members %}
+    <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-3 border-bottom border-light">
+      <span>{{ u.display_name }} <span class="text-muted">({{ u.email }})</span></span>
+      <span class="badge bg-secondary">{{ u.role }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+  <div class="mt-4">
+    <a href="{{ url_for('homes.invite') }}" class="btn btn-primary">Invite member</a>
+    <a href="{{ url_for('dashboard.dashboard') }}" class="btn btn-outline-secondary ms-2">Back to dashboard</a>
+  </div>
+</div>
+{% endblock %}
