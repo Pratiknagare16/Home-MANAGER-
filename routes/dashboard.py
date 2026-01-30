@@ -26,7 +26,18 @@ def dashboard():
     
     # 1. KPIs
     all_exp = expenses_q.all()
-    total_expense_sum = sum(e.amount for e in all_exp)
+    
+    # Calculate expenses for this month
+    today = datetime.today()
+    current_month_str = today.strftime("%Y-%m")
+    
+    this_month_expenses = sum(
+        e.amount for e in all_exp 
+        if e.date.strftime("%Y-%m") == current_month_str
+    )
+    
+    # Total Expense KPI (Use This Month for relevance)
+    total_expense_sum = this_month_expenses
     
     all_tasks = tasks_q.all()
     pending_tasks = sum(1 for t in all_tasks if not t.is_completed)
@@ -34,9 +45,6 @@ def dashboard():
     notes_count = notes_q.count()
     
     # Budget Remaining (This Month)
-    today = datetime.today()
-    current_month_str = today.strftime("%Y-%m")
-    
     # Get total budget for this month
     budget = Budget.query.filter_by(
         home_id=current_user.home_id, 
@@ -45,14 +53,8 @@ def dashboard():
     ).first()
     
     budget_limit = budget.limit_amount if budget else 0
-    
-    # Calculate expenses for this month
-    this_month_expenses = sum(
-        e.amount for e in all_exp 
-        if e.date.strftime("%Y-%m") == current_month_str
-    )
-    
     budget_remaining = budget_limit - this_month_expenses if budget_limit > 0 else 0
+    budget_percentage = (budget_remaining / budget_limit * 100) if budget_limit > 0 else 0
     
     # 2. Charts Data
     # Category Breakdown
@@ -91,6 +93,7 @@ def dashboard():
         pending_tasks=pending_tasks,
         notes_count=notes_count,
         budget_remaining=budget_remaining,
+        budget_percentage=budget_percentage,
         has_budget=(budget_limit > 0),
         recent_expenses=recent_expenses,
         recent_tasks=recent_tasks,

@@ -1,60 +1,60 @@
-// Home Manager – animations, toasts, count-up, expense delete
-(function () {
-  var DUR_MS = 250;
-  var TOAST_PAUSE_MS = 4000;
-
-  function initToasts() {
-    document.querySelectorAll('.toast-container .alert').forEach(function (el) {
-      el.classList.add('toast-in');
-      setTimeout(function () {
-        var alert = bootstrap.Alert.getOrCreateInstance(el);
-        if (alert) alert.close();
-      }, TOAST_PAUSE_MS);
-    });
-  }
-
-  function initExpenseDelete() {
-    document.querySelectorAll('.expense-delete-form').forEach(function (form) {
-      form.addEventListener('submit', function (e) {
-        if (form.getAttribute('data-animating') === '1') return;
-        e.preventDefault();
-        var row = form.closest('.expense-row');
-        if (!row) { form.submit(); return; }
-        row.classList.add('expense-row-removing');
-        setTimeout(function () {
-          form.setAttribute('data-animating', '1');
-          form.submit();
-        }, DUR_MS);
-      });
-    });
-  }
-
-  function initCountUp() {
-    document.querySelectorAll('.count-up').forEach(function (el) {
-      var target = parseFloat(el.getAttribute('data-count')) || 0;
-      var format = el.getAttribute('data-format') || 'integer';
-      var duration = 600;
-      var start = 0;
-      var startTime = null;
-      function step(timestamp) {
-        if (!startTime) startTime = timestamp;
-        var progress = Math.min((timestamp - startTime) / duration, 1);
-        progress = 1 - Math.pow(1 - progress, 2);
-        var current = start + (target - start) * progress;
-        if (format === 'currency') {
-          el.textContent = '₹' + current.toFixed(2);
-        } else {
-          el.textContent = Math.round(current);
+document.addEventListener('DOMContentLoaded', function() {
+    // Mobile Navigation Active State
+    const currentPath = window.location.pathname;
+    const mobileLinks = document.querySelectorAll('.mobile-nav-item');
+    
+    mobileLinks.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('active');
         }
-        if (progress < 1) requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
     });
-  }
 
-  document.addEventListener('DOMContentLoaded', function () {
-    initToasts();
-    initExpenseDelete();
-    initCountUp();
-  });
-})();
+    // Sidebar Toggle (Mobile)
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('appSidebar');
+    const mainContent = document.querySelector('.main-content');
+    
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent immediate closing
+            sidebar.classList.toggle('show');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth < 992 && 
+                sidebar.classList.contains('show') && 
+                !sidebar.contains(e.target) && 
+                e.target !== sidebarToggle) {
+                sidebar.classList.remove('show');
+            }
+        });
+    }
+
+    // Initialize Tooltips (Bootstrap)
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Quick Add Modal Tab Handling
+    const quickAddTabs = document.querySelectorAll('#quickAddTabs button');
+    quickAddTabs.forEach(tab => {
+        tab.addEventListener('shown.bs.tab', function (event) {
+            // Focus on first input of active tab
+            const targetId = event.target.getAttribute('data-bs-target');
+            const targetPane = document.querySelector(targetId);
+            const firstInput = targetPane.querySelector('input, select, textarea');
+            if (firstInput) firstInput.focus();
+        });
+    });
+
+    // Flash Messages Auto-dismiss
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+});

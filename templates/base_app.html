@@ -72,7 +72,7 @@
     <!-- Main Content -->
     <div class="main-content">
         <!-- Top Header -->
-        <header class="top-header d-flex align-items-center justify-content-between px-4 py-3 bg-white border-bottom sticky-top">
+        <header class="top-header d-flex align-items-center justify-content-between px-4 py-3 bg-white border-bottom">
             <div class="d-flex align-items-center gap-3">
                 <button class="btn btn-link d-lg-none text-dark p-0" id="sidebarToggle">
                     <i class="fa-solid fa-bars fs-5"></i>
@@ -103,6 +103,82 @@
     </div>
 </div>
 
+<!-- Quick Add Modal -->
+<div class="modal fade" id="quickAddModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold">Quick Add</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs nav-fill mb-4" id="quickAddTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active fw-semibold" id="expense-tab" data-bs-toggle="tab" data-bs-target="#expense-pane" type="button" role="tab">Expense</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-semibold" id="task-tab" data-bs-toggle="tab" data-bs-target="#task-pane" type="button" role="tab">Task</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-semibold" id="note-tab" data-bs-toggle="tab" data-bs-target="#note-pane" type="button" role="tab">Note</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="quickAddTabContent">
+                    <!-- Expense Form -->
+                    <div class="tab-pane fade show active" id="expense-pane" role="tabpanel">
+                        <form action="{{ url_for('expenses.list_expenses') }}" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label text-muted small fw-bold text-uppercase">Title</label>
+                                <input type="text" class="form-control bg-light border-0" name="title" placeholder="What did you buy?" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small fw-bold text-uppercase">Amount</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0">₹</span>
+                                    <input type="number" step="0.01" class="form-control bg-light border-0" name="amount" placeholder="0.00" required>
+                                </div>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Add Expense</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Task Form -->
+                    <div class="tab-pane fade" id="task-pane" role="tabpanel">
+                        <form action="{{ url_for('tasks.list_tasks') }}" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label text-muted small fw-bold text-uppercase">Task</label>
+                                <input type="text" class="form-control bg-light border-0" name="task" placeholder="What needs to be done?" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success">Add Task</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Note Form -->
+                    <div class="tab-pane fade" id="note-pane" role="tabpanel">
+                        <form action="{{ url_for('notes.list_notes') }}" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label text-muted small fw-bold text-uppercase">Title</label>
+                                <input type="text" class="form-control bg-light border-0" name="title" placeholder="Note title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small fw-bold text-uppercase">Content</label>
+                                <textarea class="form-control bg-light border-0" name="content" rows="3" placeholder="Write something..."></textarea>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-warning text-white">Add Note</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Mobile Bottom Nav -->
 <nav class="mobile-bottom-nav d-lg-none fixed-bottom bg-white border-top d-flex justify-content-around align-items-center py-2 safe-area-bottom">
     <a href="{{ url_for('dashboard.dashboard') }}" class="nav-item text-decoration-none text-center {% if request.endpoint == 'dashboard.dashboard' %}active text-primary{% else %}text-secondary{% endif %}">
@@ -127,41 +203,9 @@
         <span class="small">Note</span>
     </a>
 </nav>
+{% endblock %}
 
-<!-- Quick Add Modal -->
-<div class="modal fade" id="quickAddModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold">Quick Add</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <div class="d-grid gap-3">
-                    <a href="{{ url_for('expenses.list_expenses') }}" class="btn btn-outline-primary p-3 text-start d-flex align-items-center rounded-3">
-                        <div class="bg-primary-subtle p-2 rounded-circle me-3 text-primary">
-                            <i class="fa-solid fa-wallet"></i>
-                        </div>
-                        <span class="fw-semibold">Add Expense</span>
-                    </a>
-                    <a href="{{ url_for('tasks.list_tasks') }}" class="btn btn-outline-success p-3 text-start d-flex align-items-center rounded-3">
-                        <div class="bg-success-subtle p-2 rounded-circle me-3 text-success">
-                            <i class="fa-solid fa-check-circle"></i>
-                        </div>
-                        <span class="fw-semibold">Add Task</span>
-                    </a>
-                    <a href="{{ url_for('notes.list_notes') }}" class="btn btn-outline-warning p-3 text-start d-flex align-items-center rounded-3">
-                        <div class="bg-warning-subtle p-2 rounded-circle me-3 text-warning">
-                            <i class="fa-solid fa-sticky-note"></i>
-                        </div>
-                        <span class="fw-semibold">Add Note</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
+{% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const toggle = document.getElementById('sidebarToggle');

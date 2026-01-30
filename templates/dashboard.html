@@ -1,76 +1,257 @@
 {% extends "base_app.html" %}
 {% block title %}Dashboard – Home Manager{% endblock %}
 {% block app_content %}
-<header class="page-header">
-  <h1 class="page-title">Dashboard</h1>
-</header>
-
-<div class="row g-4 mb-4 dashboard-stagger">
-  <div class="col-md-4">
-    <div class="card border-0 kpi-card">
-      <div class="card-body">
-        <h5 class="card-title">Total expenses</h5>
-        <p class="card-text"><span class="count-up" data-count="{{ total_expense }}" data-format="currency">₹0.00</span></p>
-        <a href="{{ url_for('expenses.list_expenses') }}" class="btn btn-outline-primary btn-sm">View all</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="card border-0 kpi-card">
-      <div class="card-body">
-        <h5 class="card-title">Pending tasks</h5>
-        <p class="card-text"><span class="count-up" data-count="{{ pending_tasks }}" data-format="integer">0</span></p>
-        <a href="{{ url_for('tasks.list_tasks') }}" class="btn btn-outline-primary btn-sm">View all</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="card border-0 kpi-card">
-      <div class="card-body">
-        <h5 class="card-title">Notes</h5>
-        <p class="card-text"><span class="count-up" data-count="{{ notes_count }}" data-format="integer">0</span></p>
-        <a href="{{ url_for('notes.list_notes') }}" class="btn btn-outline-primary btn-sm">View all</a>
-      </div>
-    </div>
-  </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800 fw-bold">Dashboard</h1>
+    <button class="btn btn-primary shadow-sm d-none d-md-block" data-bs-toggle="modal" data-bs-target="#quickAddModal">
+        <i class="fa-solid fa-plus me-2"></i> Quick Add
+    </button>
 </div>
 
-<div class="row dashboard-stagger">
-  <div class="col-lg-6 mb-4 dashboard-activity-card">
-    <div class="card border-0">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <span class="fw-semibold">Recent expenses</span>
-        <a href="{{ url_for('expenses.list_expenses') }}" class="btn btn-primary btn-sm">Add</a>
-      </div>
-      <ul class="list-group list-group-flush">
-        {% for e in recent_expenses %}
-        <li class="list-group-item d-flex justify-content-between">
-          <span>{{ e.title }}</span>
-          <span class="expense-amount">₹{{ "%.2f"|format(e.amount) }}</span>
-        </li>
-        {% else %}
-        <li class="list-group-item text-muted empty-state">No expenses yet.</li>
-        {% endfor %}
-      </ul>
+<!-- KPI Cards -->
+<div class="row g-4 mb-4">
+    <!-- Total Expenses -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100 kpi-card border-start border-4 border-primary rounded-3">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Expenses</div>
+                    <div class="dropdown no-arrow">
+                        <i class="fa-solid fa-wallet fs-4 text-primary opacity-50"></i>
+                    </div>
+                </div>
+                <div class="h5 mb-0 fw-bold text-dark">₹{{ "%.2f"|format(total_expense) }}</div>
+                <div class="mt-2 mb-0 text-muted small">
+                    <span class="text-success me-2"><i class="fa-solid fa-arrow-up"></i> 3.4%</span>
+                    <span>Since last month</span>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="col-lg-6 mb-4 dashboard-activity-card">
-    <div class="card border-0">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <span class="fw-semibold">Recent tasks</span>
-        <a href="{{ url_for('tasks.list_tasks') }}" class="btn btn-primary btn-sm">Add</a>
-      </div>
-      <ul class="list-group list-group-flush">
-        {% for t in recent_tasks %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-          <span class="{% if t.is_completed %}text-decoration-line-through text-muted{% endif %}">{{ t.title or t.task }}</span>
-          {% if t.is_completed %}<span class="badge bg-success">Done</span>{% else %}<span class="badge bg-secondary">Pending</span>{% endif %}
-        </li>
-        {% else %}
-        <li class="list-group-item text-muted empty-state">No tasks yet.</li>
-        {% endfor %}
-      </ul>
+
+    <!-- Pending Tasks -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100 kpi-card border-start border-4 border-success rounded-3">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Pending Tasks</div>
+                    <i class="fa-solid fa-check-circle fs-4 text-success opacity-50"></i>
+                </div>
+                <div class="h5 mb-0 fw-bold text-dark">{{ pending_tasks }}</div>
+                <div class="mt-2 mb-0 text-muted small">
+                    <span>Active tasks</span>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <!-- Notes -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100 kpi-card border-start border-4 border-warning rounded-3">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Notes</div>
+                    <i class="fa-solid fa-sticky-note fs-4 text-warning opacity-50"></i>
+                </div>
+                <div class="h5 mb-0 fw-bold text-dark">{{ notes_count }}</div>
+                <div class="mt-2 mb-0 text-muted small">
+                    <span>Personal notes</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Budget Remaining -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100 kpi-card border-start border-4 border-info rounded-3">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Budget Remaining</div>
+                    <i class="fa-solid fa-piggy-bank fs-4 text-info opacity-50"></i>
+                </div>
+                <div class="h5 mb-0 fw-bold text-dark">
+                    {% if has_budget %}
+                    ₹{{ "%.2f"|format(budget_remaining) }}
+                    {% else %}
+                    <span class="text-muted fs-6">Not set</span>
+                    {% endif %}
+                </div>
+                <div class="mt-2 mb-0 text-muted small">
+                    {% if has_budget %}
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>{{ "%.0f"|format(budget_percentage) }}% left</span>
+                    </div>
+                    <div class="progress" style="height: 6px;">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ budget_percentage }}%" aria-valuenow="{{ budget_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    {% else %}
+                    <a href="#" class="text-decoration-none text-info">Set Budget</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Charts Row -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm h-100 rounded-3">
+            <div class="card-header bg-white py-3 d-flex flex-row align-items-center justify-content-between border-bottom-0">
+                <h6 class="m-0 fw-bold text-primary">Monthly Expenses</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="monthlyChart" style="height: 300px; width: 100%;"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100 rounded-3">
+            <div class="card-header bg-white py-3 d-flex flex-row align-items-center justify-content-between border-bottom-0">
+                <h6 class="m-0 fw-bold text-primary">Categories</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-pie pt-4 pb-2">
+                    <canvas id="categoryChart" style="height: 250px; width: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Items Row -->
+<div class="row g-4">
+    <!-- Recent Expenses -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100 rounded-3">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom-0">
+                <h6 class="m-0 fw-bold text-primary">Recent Expenses</h6>
+                <a href="{{ url_for('expenses.list_expenses') }}" class="btn btn-sm btn-light text-primary fw-semibold">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="border-0 ps-4 py-3 text-muted small text-uppercase fw-bold">Date</th>
+                                <th class="border-0 py-3 text-muted small text-uppercase fw-bold">Title</th>
+                                <th class="border-0 py-3 text-muted small text-uppercase fw-bold">Category</th>
+                                <th class="border-0 pe-4 py-3 text-end text-muted small text-uppercase fw-bold">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for e in recent_expenses %}
+                            <tr>
+                                <td class="ps-4 border-bottom-0 text-muted small">{{ e.date.strftime('%b %d') }}</td>
+                                <td class="border-bottom-0 fw-semibold text-dark">{{ e.title }}</td>
+                                <td class="border-bottom-0">
+                                    <span class="badge bg-light text-dark border">{{ e.category.name if e.category else 'Uncategorized' }}</span>
+                                </td>
+                                <td class="pe-4 border-bottom-0 text-end fw-bold text-dark">₹{{ "%.2f"|format(e.amount) }}</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="4" class="text-center py-4 text-muted">No expenses yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Tasks -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100 rounded-3">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom-0">
+                <h6 class="m-0 fw-bold text-primary">Recent Tasks</h6>
+                <a href="{{ url_for('tasks.list_tasks') }}" class="btn btn-sm btn-light text-primary fw-semibold">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for t in recent_tasks %}
+                    <li class="list-group-item d-flex align-items-center justify-content-between px-4 py-3 border-bottom-0">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" {% if t.is_completed %}checked{% endif %} disabled>
+                            </div>
+                            <div>
+                                <div class="fw-semibold {% if t.is_completed %}text-decoration-line-through text-muted{% endif %}">{{ t.title or t.task }}</div>
+                                <div class="small text-muted">{{ t.due_date.strftime('%b %d') if t.due_date else 'No due date' }}</div>
+                            </div>
+                        </div>
+                        <span class="badge {% if t.is_completed %}badge-soft-success{% else %}badge-soft-warning{% endif %} rounded-pill px-3">
+                            {% if t.is_completed %}Done{% else %}Pending{% endif %}
+                        </span>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item text-center py-4 text-muted border-bottom-0">No tasks yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Monthly Chart
+    const ctxMonth = document.getElementById('monthlyChart').getContext('2d');
+    new Chart(ctxMonth, {
+        type: 'line',
+        data: {
+            labels: {{ chart_monthly_labels | safe }},
+            datasets: [{
+                label: 'Expenses',
+                data: {{ chart_monthly_values | safe }},
+                borderColor: '#4e73df',
+                backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                pointRadius: 3,
+                pointBackgroundColor: '#4e73df',
+                pointBorderColor: '#4e73df',
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: '#4e73df',
+                pointHoverBorderColor: '#4e73df',
+                pointHitRadius: 10,
+                pointBorderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: { grid: { display: false } },
+                y: { grid: { borderDash: [2], drawBorder: false }, ticks: { callback: function(value) { return '₹' + value; } } }
+            }
+        }
+    });
+
+    // Category Chart
+    const ctxCat = document.getElementById('categoryChart').getContext('2d');
+    new Chart(ctxCat, {
+        type: 'doughnut',
+        data: {
+            labels: {{ chart_category_labels | safe }},
+            datasets: [{
+                data: {{ chart_category_values | safe }},
+                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
+                hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#dda20a', '#be2617'],
+                hoverBorderColor: "rgba(234, 236, 244, 1)",
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 6 } }
+            }
+        }
+    });
+});
+</script>
 {% endblock %}
